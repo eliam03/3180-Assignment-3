@@ -1,0 +1,33 @@
+close all;
+
+%first order system driven by sinusoid
+function dXdt = rate_func01(t,X)
+    dXdt = -5*X + 5*cos(t) - sin(t);
+end
+function X = solution01(t)
+    X = cos(t);
+end
+
+t = 0.492;
+XA = solution01(t);
+hs = logspace(10e-5, 10, 100);
+errors = [];
+
+for h = hs
+    e = local_error(@rate_func01, XA, t, h);
+    errors = [errors, e];
+end
+
+figure();
+loglog(hs, errors, "*"); hold on
+coeffs = polyfit(log(hs), log(errors), 1)
+yfit = exp(polyval(coeffs, log(hs));
+loglog(hs, yfit, "r--")
+
+%undamped second order system 
+function dXdt = rate_func02(t,X)
+    dXdt = [0,-1;1,0]*X;
+end
+function X = solution02(t)
+    X = [cos(t);sin(t)];
+end

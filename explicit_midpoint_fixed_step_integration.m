@@ -12,13 +12,13 @@
 %num_evals: total number of calls made to rate_func_in during the integration
 function [t_list,X_list,h_avg, num_evals] = explicit_midpoint_fixed_step_integration(rate_func_in,tspan,X0,h_ref)
 
-N = (tspan(2)-tspan(1))/h+1;
-h_avg = (tspan(2)-tspan(1))/N;
-num_evals = 0;
-t_list = linspace(tspan(1),tspan(2), N+1);
-X_list = [X0];
-for i = t_list(2:end)
-    [X_list(end+1),num_evals1] = explicit_midpoint_step(rate_func_in,i,X_list(end),h_avg);
-    num_evals = num_evals1+num_evals;
-end
+    N = (tspan(2)-tspan(1))/h_ref+1;
+    h_avg = (tspan(2)-tspan(1))/N;
+    num_evals = 0;
+    t_list = linspace(tspan(1),tspan(2), N+1);
+    X_list = [X0];
+    for i = t_list(2:end)
+        [X_list(end+1),num_evals1] = explicit_midpoint_step(rate_func_in,i,X_list(end),h_avg);
+        num_evals = num_evals1+num_evals;
+    end
 end
