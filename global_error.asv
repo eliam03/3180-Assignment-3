@@ -1,0 +1,4 @@
+function error = global_error(rate_func_in, XA, t_range, h)
+    [t_list,X_list,h_avg, num_evals] = explicit_midpoint_fixed_step_integration(rate_func_in, t_range, XA, h); % change explicit_midpoint_step to the other funcs when needed
+    error = norm(Xn1(end) - rate_func_in(t_range(end), XA));
+end
