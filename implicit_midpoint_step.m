@@ -13,4 +13,5 @@
 % rate_func_in when computing the next step
 function [XB,num_evals] = implicit_midpoint_step(rate_func_in,t,XA,h)
 %your code here
+
 end

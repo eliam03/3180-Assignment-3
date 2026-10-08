@@ -5,7 +5,7 @@
 %   X: the input value of fun that we want to compute the derivative at
 %OUTPUTS:
 %   J: approximation of Jacobian of fun at x
-function J = approximate_jacobian(fun,X)
+function [J, num_evals] = approximate_jacobian(fun,X)
     %set the step size to be tiny
     h = 1e-6;
     
@@ -34,6 +34,7 @@ function J = approximate_jacobian(fun,X)
         %the result should be a vector quantity
         f_right = fun(X+dX);
         f_left = fun(X-dX); 
+        num_evals = num_evals + 2;
 
         %approximate the first derivative
         dfdx = (f_right-f_left)./(2*h);
