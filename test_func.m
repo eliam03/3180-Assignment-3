@@ -20,7 +20,7 @@ function test_func()
     coeffs = polyfit(log(hs), log(local_errors), 1);
     localfit = exp(polyval(coeffs, log(hs)));
     loglog(hs, localfit, "r", LineWidth=1);
-    title("Local Truncation Error for Explicit Midpoint Method",'FontSize',13);
+    title("Local Truncation Error for Forward Euler Method",'FontSize',13);
     xlabel("$h_{avg} (-)$ ",'FontSize',13);
     ylabel("Local Truncation error $(-)$",'FontSize',13)
     legend("Errors", "Fit line",'FontSize',11, "Location", "northwest")
@@ -42,10 +42,10 @@ function test_func()
     coeffs
     globalfit = exp(polyval(coeffs, log(hs)));
     loglog(hs, globalfit, "r", LineWidth=1);
-    title("Global Truncation Error for Explicit Midpoint Method",'FontSize',13);
+    title("Global Truncation Error for Forward Euler Method",'FontSize',13);
     xlabel("$h_{avg} (-)$ ",'FontSize',13);
     ylabel("Global Truncation error $(-)$",'FontSize',13)
-    legend("Errors", "Fit line",'FontSize',11, "Location", "northwest")
+    legend("Errors", "Fit line",'FontSize',11, "Location", "northeast")
 end
 
 
