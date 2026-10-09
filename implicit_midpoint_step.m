@@ -13,5 +13,7 @@
 % rate_func_in when computing the next step
 function [XB,num_evals] = implicit_midpoint_step(rate_func_in,t,XA,h)
 %your code here
+GB_wrapper = @(XB) XA+h*rate_func_in(t+h/2,.5*(XA+XB))-XB;
+[XB, exit_flag, num_evals] = newton_solver2(@GB_wrapper,XA);
 
 end
