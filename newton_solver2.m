@@ -15,7 +15,7 @@
 %   x: estimate for root of fun
 %   exit_flag: an integer indicating that the solver succeeded (1) or
 %   failed (0)
-function [X, exit_flag] = newton_solver2(fun,X0,numerical_diff,dxmin,ftol,max_iter,dxmax)
+function [X, exit_flag, num_evals] = newton_solver2(fun,X0,numerical_diff,dxmin,ftol,max_iter,dxmax)
     arguments
         fun (1,:) function_handle
         X0 (:,1) double
@@ -32,16 +32,20 @@ function [X, exit_flag] = newton_solver2(fun,X0,numerical_diff,dxmin,ftol,max_it
     iteration_flag = true;     % set flags True to start the while loop
     interval_flag = true;
     value_flag = true;
-    
+    num_evals = 0;
     % loop through newton's method until the root is found, or until
     % the iteration maximum is hit
     while any(interval_flag,'all') && value_flag && iteration_flag
 
         if numerical_diff == 0
             [F,J] = fun(X);
+            num_evals = num_evals + 1;
         else 
-            J = approximate_jacobian(fun,X);
+            [J, temp_evals] = approximate_jacobian(fun,X);
+            num_evals = num_evals + temp_evals;
             F = fun(X);
+            num_evals = num_evals + 1;
+
         end
 
         X0 = X;   

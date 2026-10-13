@@ -20,7 +20,7 @@ function [J, num_evals] = approximate_jacobian(fun,X)
     %initialize the Jacobian to be a matrix
     %with height num_out and width num_in
     J = zeros([num_out,num_in]);
-
+    num_evals = 0;
     %iterate through each scalar input of fun
     for n = 1:num_in
         %set dX vector so it has the form:
