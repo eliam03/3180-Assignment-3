@@ -7,43 +7,63 @@ function test_func()
     t = 0.492;
     XA = solution01(t);
     hs = logspace(-4.5,-1,100);
-    local_errors = zeros(size(hs));
+    local_errors_e = zeros(size(hs));
+    local_errors_m = zeros(size(hs));
     
     for n = 1:length(hs)
         h = hs(n);
-        l_e = local_error(@rate_func01, @solution01, XA, t, h);
-        local_errors(n) = l_e;
+        l_ee = local_error(@rate_func01, @solution01, XA, t, h, "euler");
+        l_em = local_error(@rate_func01, @solution01, XA, t, h, "midpoint");
+        local_errors_e(n) = l_ee;
+        local_errors_m(n) = l_em;
     end
     
     figure();
-    loglog(hs, local_errors, "b.", MarkerSize=10); hold on
-    coeffs = polyfit(log(hs), log(local_errors), 1);
-    localfit = exp(polyval(coeffs, log(hs)));
-    loglog(hs, localfit, "r", LineWidth=1);
-    title("Local Truncation Error for Forward Euler Method",'FontSize',13);
+    loglog(hs, local_errors_e, "b.", MarkerSize=10); hold on
+    coeffs_e = polyfit(log(hs), log(local_errors_e), 1);
+    localfit_e = exp(polyval(coeffs_e, log(hs)));
+    loglog(hs, localfit_e, "r", LineWidth=1);
+
+    loglog(hs, local_errors_m, "k.", MarkerSize=10); hold on
+    coeffs_m = polyfit(log(hs), log(local_errors_m), 1);
+    localfit_m = exp(polyval(coeffs_m, log(hs)));
+    loglog(hs, localfit_m, "g", LineWidth=1);
+
+    title("Local Truncation Error for Explicit Methods",'FontSize',13);
     xlabel("$h_{avg} (-)$ ",'FontSize',13);
     ylabel("Local Truncation error $(-)$",'FontSize',13)
-    legend("Errors", "Fit line",'FontSize',11, "Location", "northwest")
+    legend("Euler method error", "Euler fit line", "Midpoint method error", "Midpoint fit line", 'FontSize',11, "Location", "northwest")
     
-    global_errors = zeros(size(hs));
-    h_avg_list = zeros(size(hs));
+    global_errors_e = zeros(size(hs));
+    global_errors_m = zeros(size(hs));
+    h_avg_list_e = zeros(size(hs));
+    h_avg_list_m = zeros(size(hs));
     time_int = [0, 100];
     
     for n = 1:length(hs)
         h = hs(n);
-        [g_e,h_avg] = global_error(@rate_func01, @solution01, solution01(time_int(1)), time_int, h);
-        global_errors(n) = g_e;
-        h_avg_list(n) = h_avg;
+        [g_ee,h_avge] = global_error(@rate_func01, @solution01, solution01(time_int(1)), time_int, h, "euler");
+        global_errors_e(n) = g_ee;
+        h_avg_list_e(n) = h_avge;
+
+        [g_em,h_avgm] = global_error(@rate_func01, @solution01, solution01(time_int(1)), time_int, h, "midpoint");
+        global_errors_m(n) = g_em;
+        h_avg_list_m(n) = h_avgm;
     end
     
     figure();
-    loglog(h_avg_list, global_errors, "b.", MarkerSize=10); hold on
-    coeffs = polyfit(log(hs), log(global_errors), 1);
-    coeffs
-    globalfit = exp(polyval(coeffs, log(hs)));
-    loglog(hs, globalfit, "r", LineWidth=1);
-    title("Global Truncation Error for Forward Euler Method",'FontSize',13);
+    loglog(h_avg_list_e, global_errors_e, "b.", MarkerSize=10); hold on
+    coeffs_e = polyfit(log(hs), log(global_errors_e), 1);
+    globalfit_e = exp(polyval(coeffs_e, log(hs)));
+    loglog(hs, globalfit_e, "r", LineWidth=1);
+
+    loglog(h_avg_list_m, global_errors_m, "k.", MarkerSize=10); hold on
+    coeffs_m = polyfit(log(hs), log(global_errors_m), 1);
+    globalfit_m = exp(polyval(coeffs_m, log(hs)));
+    loglog(hs, globalfit_m, "g", LineWidth=1);
+
+    title("Global Truncation Error for Explicit Methods",'FontSize',13);
     xlabel("$h_{avg} (-)$ ",'FontSize',13);
     ylabel("Global Truncation error $(-)$",'FontSize',13)
-    legend("Errors", "Fit line",'FontSize',11, "Location", "northeast")
+    legend("Euler method error", "Euler fit line", "Midpoint method error", "Midpoint fit line",'FontSize',11, "Location", "northeast")
 end
