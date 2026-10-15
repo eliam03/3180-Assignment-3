@@ -9,6 +9,8 @@ function test_func()
     hs = logspace(-4.5,-1,100);
     local_errors_e = zeros(size(hs));
     local_errors_m = zeros(size(hs));
+    local_errors_b = zeros(size(hs));
+    local_errors_i = zeros(size(hs));
 
     diffs_e = zeros(size(hs));
     diffs_m = zeros(size(hs));
@@ -21,6 +23,12 @@ function test_func()
         local_errors_m(n) = l_em;
         diffs_e(n) = diffe;
         diffs_m(n) = diffm;
+
+        [l_eb, diffb] = local_error(@rate_func01, @solution01, XA, t, h, "backward_euler");
+        [l_ei, diffi] = local_error(@rate_func01, @solution01, XA, t, h, "implicit_midpoint");
+        local_errors_b(n) = l_eb;
+        local_errors_i(n) = l_ei;
+        
     end
     
     figure();
@@ -36,10 +44,14 @@ function test_func()
     localfit_m = exp(polyval(coeffs_m, log(hs)));
     loglog(hs, localfit_m, "g", LineWidth=1);
 
+    % loglog(hs, local_errors_b, "m.", MarkerSize=10); hold on
+    % 
+    % loglog(hs, local_errors_i, "c.", MarkerSize=10); hold on
+
     title("Local Truncation Error for Explicit Methods",'FontSize',13);
     xlabel("$h_{avg} (-)$ ",'FontSize',13);
     ylabel("Local Truncation error $(-)$",'FontSize',13)
-    legend("Euler method error", "Euler differences", "Euler fit line", "Midpoint method error", ""Midpoint fit line", 'FontSize',11, "Location", "northwest")
+    legend("Euler method error", "Euler differences", "Euler fit line", "Midpoint method error", "Midpoint differences", "Midpoint fit line", 'FontSize',11, "Location", "southeast")
 
     myfig = gcf();
     exportgraphics(myfig , 'local_err_explicit_01.png', 'Resolution', 600);
@@ -49,17 +61,27 @@ function test_func()
     global_errors_m = zeros(size(hs));
     h_avg_list_e = zeros(size(hs));
     h_avg_list_m = zeros(size(hs));
+    evals_e = zeros(size(hs));
+    evals_m = zeros(size(hs));
+    global_errors_b = zeros(size(hs));
+    global_errors_i = zeros(size(hs));
+    h_avg_list_b = zeros(size(hs));
+    h_avg_list_i = zeros(size(hs));
+    evals_e = zeros(size(hs));
+    evals_m = zeros(size(hs));
     time_int = [0, 100];
     
     for n = 1:length(hs)
         h = hs(n);
-        [g_ee,h_avge] = global_error(@rate_func01, @solution01, solution01(time_int(1)), time_int, h, "euler");
+        [g_ee,h_avge, evale] = global_error(@rate_func01, @solution01, solution01(time_int(1)), time_int, h, "euler");
         global_errors_e(n) = g_ee;
         h_avg_list_e(n) = h_avge;
+        evals_e(n) = evale;
 
-        [g_em,h_avgm] = global_error(@rate_func01, @solution01, solution01(time_int(1)), time_int, h, "midpoint");
+        [g_em,h_avgm, evalm] = global_error(@rate_func01, @solution01, solution01(time_int(1)), time_int, h, "midpoint");
         global_errors_m(n) = g_em;
         h_avg_list_m(n) = h_avgm;
+        evals_m(n) = evalm;
     end
     
     figure();
@@ -76,7 +98,7 @@ function test_func()
     title("Global Truncation Error for Explicit Methods",'FontSize',13);
     xlabel("$h_{avg} (-)$ ",'FontSize',13);
     ylabel("Global Truncation error $(-)$",'FontSize',13)
-    legend("Euler method error", "Euler fit line", "Midpoint method error", "Midpoint fit line",'FontSize',11, "Location", "northeast")
+    legend("Euler method error", "Euler fit line", "Midpoint method error", "Midpoint fit line",'FontSize',11, "Location", "west")
 
     myfig = gcf();
     exportgraphics(myfig , 'global_err_explicit_01.png', 'Resolution', 600);
