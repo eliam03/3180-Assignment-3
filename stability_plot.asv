@@ -11,7 +11,7 @@ function stability_plot()
 
     tspan = [0,20];
     X0 = solution01(tspan(1));
-    h = .38
+    h = .45
     t = tiledlayout(4, 1, 'TileSpacing', 'compact', 'Padding', 'compact');
     for i = 1:length(functions)
             nexttile
@@ -19,11 +19,11 @@ function stability_plot()
         step_func = str2func(functions(i));
         [t_list,numerical_Xlist,h_avg, num_evals] = fixed_step_integration(@rate_func01,step_func,tspan,X0,h);
         %subplot(4,1,i);
-        plot(t_list, numerical_Xlist);
+        plot(t_list, numerical_Xlist, );
         hold on
         t_list = linspace(0,20,300);
         analytical_Xlist = solution01(t_list);
-        plot(t_list, analytical_Xlist,'--k')
+        plot(t_list, analytical_Xlist,'k')
         xlabel("time (s)",'FontSize',13)
         ylabel("x(t) (-)",'FontSize',13)
         title(names(i), 'FontSize',13)
